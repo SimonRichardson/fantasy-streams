@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "daggy": "^0.x.x",
+    "fantasy-eithers": "^0.x.x",
     "fantasy-options": "^0.x.x",
     "fantasy-combinators": "^0.x.x",
     "fantasy-sorcery": "^0.x.x"

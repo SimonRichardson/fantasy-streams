@@ -1,11 +1,16 @@
 var combinators = require('fantasy-combinators'),
-    daggy = require('daggy'),
-    sorcery = require('fantasy-sorcery'),
+    daggy       = require('daggy'),
+    sorcery     = require('fantasy-sorcery'),
+    Either      = require('fantasy-eithers'),
+    
+    rec  = require('./rec'),
+    Unit = require('./unit'),
 
     compose  = combinators.compose,
     constant = combinators.constant,
     empty    = sorcery.empty,
     point    = sorcery.point,
+    tailRec  = rec.tailRec,
 
     Process = daggy.taggedSum({
         Halt: [],
@@ -175,22 +180,33 @@ Process.prototype.evalMap = function(f) {
 };
 
 Process.prototype.runFoldMap = function(f, p) {
-    function go(x, acc) {
-        return x.cata({
-            Halt: constant(point(p, acc)),
+    function go(x) {
+        return x.process.cata({
+            Halt: function() {
+                return Either.Right(x.acc);
+            },
             Emit: function(h, t) {
-                return go(t, f(h).concat(acc));
+                return Etiher.Left({
+                    process: t,
+                    acc    : x.acc(f(h))
+                });
             },
             Await: function(f) {
                 return f(function(req, recv, fb) {
                     return req.chain(function(s) {
-                        return go(recv(s), acc);
+                        return Either.Left({
+                            process: recv(s),
+                            acc    : x.acc
+                        });
                     });
                 });
             }
         });
     }
-    return go(this, empty(p));
+    return tailRec(go, {
+        process: this,
+        acc    : empty(p)
+    });
 };
 
 Process.prototype.runLog = function() {
@@ -199,10 +215,10 @@ Process.prototype.runLog = function() {
     }, []);
 };
 
-Process.prototype.run = function() {
+Process.prototype.run = function(p) {
     return this.runFoldMap(function(f) {
-        return [];
-    }, []);
+        return Unit;
+    }, p);
 };
 
 // HACKS! Remove these
@@ -214,7 +230,10 @@ Array.of = function(x) {
 };
 
 Function.prototype.chain = function(f) {
-    return compose(f)(this);
+    var self = this;
+    return function(x) {
+        return compose(f)(self)(x);
+    };
 };
 
 // Export
