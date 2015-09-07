@@ -186,9 +186,9 @@ Process.prototype.runFoldMap = function(f, p) {
                 return Either.Right(x.acc);
             },
             Emit: function(h, t) {
-                return Etiher.Left({
+                return Either.Left({
                     process: t,
-                    acc    : x.acc(f(h))
+                    acc    : x.acc.concat(f(h))
                 });
             },
             Await: function(f) {
@@ -198,7 +198,7 @@ Process.prototype.runFoldMap = function(f, p) {
                             process: recv(s),
                             acc    : x.acc
                         });
-                    });
+                    })();
                 });
             }
         });

@@ -17,7 +17,7 @@ ST.prototype.modifyRef = function(f) {
 
 ST.prototype.writeRef = function(x) {
     /* jshint boss: true */
-    return this.x = a;
+    return this.x = x;
 };
 
 // Export

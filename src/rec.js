@@ -13,7 +13,7 @@ function error() {
 function tailRec(f, a) {
     var r = ST.of(f(a)),
         go = function(x) {
-            return fold(error, identity);
+            return x.fold(error, identity);
         };
     until(function() {
         return r.readRef().cata({
