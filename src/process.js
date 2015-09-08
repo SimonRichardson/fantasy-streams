@@ -101,7 +101,7 @@ Process.prototype.concat = function(a) {
 Process.await = function(req, recv) {
     return Process.Await(function(f) {
         return f(req, recv, Process.Halt);
-    })
+    });
 };
 
 Process.emit = function(x) {
@@ -153,10 +153,11 @@ Process.prototype.flatten = function() {
 };
 
 Process.prototype.repeatedly = function() {
+    var self = this;
     function go(p) {
         return p.cata({
             Halt: function() {
-                return go(p);
+                return go(self);
             },
             Emit: function(h, t) {
                 return Process.Emit(h, go(t));
@@ -193,12 +194,13 @@ Process.prototype.runFoldMap = function(f, p) {
             },
             Await: function(f) {
                 return f(function(req, recv, fb) {
-                    return req.chain(function(s) {
+                    var nxt = function(s) {
                         return Either.Left({
                             process: recv(s),
                             acc    : x.acc
                         });
-                    })();
+                    }
+                    return nxt(req());
                 });
             }
         });
@@ -212,13 +214,11 @@ Process.prototype.runFoldMap = function(f, p) {
 Process.prototype.runLog = function() {
     return this.runFoldMap(function(x) {
         return [x];
-    }, []);
+    }, Array);
 };
 
 Process.prototype.run = function(p) {
-    return this.runFoldMap(function(f) {
-        return Unit;
-    }, p);
+    return this.runFoldMap(constant(Unit), p);
 };
 
 // HACKS! Remove these
@@ -227,13 +227,6 @@ Array.empty = function() {
 };
 Array.of = function(x) {
     return [x];
-};
-
-Function.prototype.chain = function(f) {
-    var self = this;
-    return function(x) {
-        return compose(f)(self)(x);
-    };
 };
 
 // Export

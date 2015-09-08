@@ -4,5 +4,5 @@ var streams = require('./../fantasy-streams'),
 (function() {
     Process.eval(function(x) {
         console.log("Running...");
-    }).runLog();
+    }).repeatedly().run(Array);
 })();
