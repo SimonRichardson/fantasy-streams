@@ -211,22 +211,10 @@ Process.prototype.runFoldMap = function(f, p) {
     });
 };
 
-Process.prototype.runLog = function() {
-    return this.runFoldMap(function(x) {
-        return [x];
-    }, Array);
-};
-
 Process.prototype.run = function(p) {
-    return this.runFoldMap(constant(Unit), p);
-};
-
-// HACKS! Remove these
-Array.empty = function() {
-    return [];
-};
-Array.of = function(x) {
-    return [x];
+    return this.runFoldMap(function(x) {
+        return p.of(x);
+    }, p);
 };
 
 // Export

@@ -1,8 +1,9 @@
 var streams = require('./../fantasy-streams'),
-    Process = streams.Process;
+    Process = streams.Process,
+    Unit    = streams.Unit;
 
 (function() {
-    Process.eval(function(x) {
+    Process.eval(function() {
         console.log("Running...");
-    }).repeatedly().run(Array);
+    }).repeatedly().run(Unit);
 })();
