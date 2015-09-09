@@ -30,7 +30,7 @@ Process.prototype.ap = function(a) {
     return this.cata({
         Halt: constant(Process.Halt),
         Emit: function(x, p) {
-            return x.ap(a).concat(t.ap(a));
+            return x.ap(a).concat(p.ap(a));
         },
         Await: function(g) {
             return Process.Await(function(h) {
@@ -108,7 +108,7 @@ Process.emit = function(x) {
     return Process.of(x);
 };
 
-Process.eval = function(x) {
+Process.input = function(x) {
     return Process.await(x, Process.emit);
 };
 
@@ -136,7 +136,7 @@ Process.prototype.flatten = function() {
         Emit: function(x, p) {
             return Process.Await(function(f) {
                 return f(x, function(a) {
-                    return Process.Emit(a, t.flatten())
+                    return Process.Emit(a, t.flatten());
                 }, Process.Halt);
             });
         },
@@ -199,7 +199,7 @@ Process.prototype.runFoldMap = function(f, p) {
                             process: recv(s),
                             acc    : x.acc
                         });
-                    }
+                    };
                     return nxt(req());
                 });
             }

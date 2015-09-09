@@ -3,7 +3,7 @@ var streams = require('./../fantasy-streams'),
     Unit    = streams.Unit;
 
 (function() {
-    Process.eval(function() {
+    Process.input(function() {
         return Date.now();
     }).map(function(x) {
         console.log("Running...", x);
