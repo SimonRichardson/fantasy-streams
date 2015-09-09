@@ -4,6 +4,8 @@ var streams = require('./../fantasy-streams'),
 
 (function() {
     Process.eval(function() {
-        console.log("Running...");
+        return Date.now();
+    }).map(function(x) {
+        console.log("Running...", x);
     }).repeatedly().run(Unit);
 })();
