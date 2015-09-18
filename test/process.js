@@ -1,43 +1,17 @@
 var λ           = require('fantasy-check/src/adapters/nodeunit'),
     functor     = require('fantasy-check/src/laws/functor'),
     monad       = require('fantasy-check/src/laws/monad'),
-    monoid = require('fantasy-check/src/laws/monoid'),
-    semigroup = require('fantasy-check/src/laws/semigroup'),
+    monoid      = require('fantasy-check/src/laws/monoid'),
+    semigroup   = require('fantasy-check/src/laws/semigroup'),
 
     streams = require('../fantasy-streams'),
+    arrays  = require('fantasy-arrays'),
 
-    Process  = streams.Process;
-
-Array.of = function(x) {
-    return [x];
-};
-
-Array.empty = function() {
-    return [];
-};
-
-Array.prototype.ap = function(x) {
-    return this.chain(function(f) {
-        return x.map(f);
-    });
-};
-
-Array.prototype.chain = function(f) {
-    var r = [];
-    for(var i = 0, len = this.length; i < len; i++) {
-        r.splice.apply(r, [r.length, 0].concat(f(this[i])));
-    }
-    return r;
-};
-
-Array.prototype.map = function(f) {
-    return this.chain(function(x) {
-        return [f(x)];
-    });
-};
+    Process = streams.Process,
+    Seq     = arrays.Seq;
 
 function run(x) {
-    return x.run(Array);
+    return x.run(Seq);
 }
 
 exports.process = {

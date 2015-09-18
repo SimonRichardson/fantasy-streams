@@ -29,7 +29,8 @@
     "grunt-contrib-nodeunit": "0.2.0",
     "fantasy-check": "git+https://github.com/fantasyland/fantasy-check.git",
     "fantasy-helpers": "^0.x.x",
-    "fantasy-identities": "git+https://github.com/fantasyland/fantasy-identities.git"
+    "fantasy-identities": "git+https://github.com/fantasyland/fantasy-identities.git",
+    "fantasy-arrays": "^0.x.x"
   },
   "scripts": {
     "test": "$(npm bin)/nodeunit test.js"
